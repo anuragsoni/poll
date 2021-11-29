@@ -1,0 +1,36 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        ocaml-version:
+          - 4.13.x
+        os:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-version }}
+          dune-cache: ${{ matrix.os != 'macos-latest' }}
+      - name: Install dependencies
+        run: |
+          opam install -t . --deps-only
+      - name: Build
+        run: |
+          opam exec -- dune build
+      - name: Test
+        run: |
+          opam exec -- dune runtest
