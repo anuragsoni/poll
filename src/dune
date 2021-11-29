@@ -1,0 +1,14 @@
+(library
+ (public_name poll)
+ (preprocess
+  (pps ppx_optcomp))
+ (preprocessor_deps config.h)
+ (foreign_stubs
+  (language c)
+  (names unix_stubs epoll_stubs))
+ (libraries kqueue duration))
+
+(rule
+ (targets config.h)
+ (action
+  (run ./config/config.exe)))
