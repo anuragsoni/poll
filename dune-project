@@ -23,6 +23,7 @@
   ppx_optcomp
   (kqueue (>= 0.2.0))
   dune-configurator
+  duration
   (ppx_expect :with-test)
   (ocaml
    (>= 4.12))))
