@@ -7,24 +7,23 @@ let create_sock port =
   socket
 ;;
 
-let rec accept poll sock =
+let accept poll sock =
   try
     let client_fd, _ = Unix.accept sock in
     Unix.set_nonblock client_fd;
-    Poll.set poll client_fd Poll.Event.read;
-    accept poll sock
+    Poll.set poll client_fd Poll.Event.read
   with
   | Unix.Unix_error (Unix.(EWOULDBLOCK | EAGAIN), _, _) -> ()
 ;;
 
-let rec read fd buf ~pos ~len =
+let read fd buf ~pos ~len =
   try
     let c = Unix.read fd buf pos len in
     if c = 0
     then `Eof
     else (
       ignore (Unix.write fd buf 0 c);
-      read fd buf ~pos ~len)
+      `Read_some)
   with
   | Unix.Unix_error (Unix.(EWOULDBLOCK | EAGAIN), _, _) -> `Poll_again
 ;;
@@ -46,6 +45,7 @@ let () =
           else (
             match read fd buf ~pos:0 ~len:1024 with
             | `Poll_again -> ()
+            | `Read_some -> ()
             | `Eof ->
               Poll.set poll fd Poll.Event.none;
               Unix.close fd));
