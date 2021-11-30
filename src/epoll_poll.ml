@@ -7,7 +7,6 @@ let fd_of_int : int -> Unix.file_descr = Obj.magic
 module Ffi = struct
   external epoll_create1 : unit -> Unix.file_descr = "poll_stub_epoll_create1"
   external epoll_in : unit -> int = "poll_stub_epollin"
-  external epollet : unit -> int = "poll_stub_epollet"
   external epoll_rdhup : unit -> int = "poll_stub_epollrdhup"
   external epoll_hup : unit -> int = "poll_stub_epollhup"
   external epoll_err : unit -> int = "poll_stub_epollerr"
@@ -40,7 +39,6 @@ module Ffi = struct
   let epoll_event_sizeof = epoll_event_sizeof ()
   let epoll_fd_offset = epoll_fd_offset ()
   let epoll_flag_offset = epoll_flag_offset ()
-  let epollet = epollet ()
   let epoll_in = epoll_in ()
   let epoll_rdhup = epoll_rdhup ()
   let epoll_hup = epoll_hup ()
@@ -96,9 +94,9 @@ let set t fd event =
   let new_flags =
     match event.Event.readable, event.Event.writable with
     | false, false -> None
-    | true, false -> Some Ffi.(flag_read lor epollet)
-    | false, true -> Some Ffi.(flag_write lor epollet)
-    | true, true -> Some Ffi.(flag_read lor flag_write lor epollet)
+    | true, false -> Some Ffi.flag_read
+    | false, true -> Some Ffi.flag_write
+    | true, true -> Some Ffi.(flag_read lor flag_write)
   in
   match current_flags, new_flags with
   | None, None -> ()
