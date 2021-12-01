@@ -6,7 +6,7 @@
  (foreign_stubs
   (language c)
   (names unix_stubs epoll_stubs))
- (libraries kqueue duration))
+ (libraries kqueue))
 
 (rule
  (targets config.h)

@@ -40,9 +40,7 @@ let set t fd event =
   let changelist = Kqueue.Event_list.create 2 in
   let ident = Kqueue.Util.file_descr_to_int fd in
   let read_flags =
-    if event.Event.readable
-    then Kqueue.Flag.(add + receipt)
-    else Kqueue.Flag.delete
+    if event.Event.readable then Kqueue.Flag.(add + receipt) else Kqueue.Flag.delete
   in
   let write_flags =
     if event.writable then Kqueue.Flag.(add + receipt) else Kqueue.Flag.delete
@@ -55,13 +53,19 @@ let set t fd event =
 ;;
 
 let wait t timeout =
+  let timeout =
+    match timeout with
+    | Timeout.Immediate -> Kqueue.Timeout.immediate
+    | Never -> Kqueue.Timeout.never
+    | After x -> Kqueue.Timeout.of_ns x
+  in
   t.ready_events <- 0;
   t.ready_events
     <- Kqueue.kevent
          t.kqueue
          ~changelist:Kqueue.Event_list.null
          ~eventlist:t.eventlist
-         (Kqueue.Timeout.of_ns timeout);
+         timeout;
   if t.ready_events = 0 then `Timeout else `Ok
 ;;
 

@@ -36,7 +36,7 @@ let () =
   Poll.set poll sock Poll.Event.read;
   let rec loop () =
     Poll.clear poll;
-    match Poll.wait poll (Duration.of_ms 10) with
+    match Poll.wait poll (Poll.Timeout.after 10_000_000L) with
     | `Timeout -> loop ()
     | `Ok ->
       Poll.iter_ready poll ~f:(fun fd _event ->
