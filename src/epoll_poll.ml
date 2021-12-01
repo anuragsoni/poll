@@ -114,9 +114,14 @@ let set t fd event =
 ;;
 
 let wait t timeout =
+  let timeout =
+    match timeout with
+    | Timeout.Immediate -> 0
+    | Never -> -1
+    | After x -> Int64.to_int (Int64.div x 1_000_000L)
+  in
   ensure_open t;
   t.ready_events <- 0;
-  let timeout = Duration.to_ms timeout in
   t.ready_events <- Ffi.epoll_wait t.epoll_fd t.events timeout;
   if t.ready_events = 0 then `Timeout else `Ok
 ;;

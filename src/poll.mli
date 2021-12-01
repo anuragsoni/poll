@@ -1,5 +1,6 @@
 module Event = Event
 module Backend = Backend
+module Timeout = Timeout
 module Poll_intf = Poll_intf
 include Poll_intf.S
 

@@ -13,7 +13,7 @@ module type S = sig
 
   (** [wait t timeout] waits for at least one event to be ready, unless the user provides
       timeout is reached. *)
-  val wait : t -> Duration.t -> [ `Ok | `Timeout ]
+  val wait : t -> Timeout.t -> [ `Ok | `Timeout ]
 
   (** [clear] clears the number of i/o events that are ready to be consumed. This should
       be called after the user consumes all events that are available after [wait]. *)
