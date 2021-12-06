@@ -43,13 +43,35 @@ let pair () =
     a, b)
 ;;
 
-let%expect_test "test poll" =
+let%expect_test "Can poll for events" =
   let r, w = pair () in
   let poll = Poll.create () in
   Poll.set poll r Poll.Event.read;
-  check_readiness poll (Poll.Timeout.after 1_000_000L);
+  (* No pending events should result in a timeout *)
+  check_readiness poll Poll.Timeout.immediate;
   [%expect {| Timeout |}];
-  ignore (Unix.write_substring w "Hello" 0 5);
-  check_readiness poll (Poll.Timeout.after 1_000_000L);
-  [%expect {| Event available |}]
+  assert (Unix.write_substring w "Hello World" 0 11 = 11);
+  (* The socket has data to read now, so an event should surface *)
+  check_readiness poll Poll.Timeout.immediate;
+  [%expect {| Event available |}];
+  let buf = Bytes.create 6 in
+  Poll.iter_ready poll ~f:(fun fd event ->
+      assert (fd = r);
+      assert event.Poll.Event.readable;
+      assert (not event.writable);
+      assert (Unix.read r buf 0 6 = 6));
+  Poll.clear poll;
+  (* We only consumed part of the content available to read. Since poll events are level
+     triggered, querying the poller again should still show pending events. *)
+  check_readiness poll Poll.Timeout.immediate;
+  [%expect {| Event available |}];
+  Poll.iter_ready poll ~f:(fun fd event ->
+      assert (fd = r);
+      assert event.Poll.Event.readable;
+      assert (not event.writable);
+      assert (Unix.read r buf 0 6 = 5));
+  Poll.clear poll;
+  (* With the entire payload consumed, poller will return a timeout again. *)
+  check_readiness poll Poll.Timeout.immediate;
+  [%expect {| Timeout |}]
 ;;
