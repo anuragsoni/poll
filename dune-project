@@ -5,7 +5,7 @@
 (generate_opam_files true)
 
 (source
-  (github anuragsoni/poll))
+ (github anuragsoni/poll))
 
 (authors "Anurag Soni")
 
@@ -17,11 +17,15 @@
 
 (package
  (name poll)
- (synopsis "Portable api for polling file descriptors for IO readiness.")
- (tags (epoll kqueue))
+ (synopsis "Portable api for polling file descriptors for IO readiness")
+ (description
+  "poll provides a portable OCaml interface to IO event notification mechanisms on macOS, Linux and Windows. It uses kqueue on macOS, epoll on Linux, and uses a vendored copy of wepoll on Windows.")
+ (tags
+  (epoll kqueue wepoll))
  (depends
   ppx_optcomp
-  (kqueue (>= 0.2.0))
+  (kqueue
+   (>= 0.2.0))
   dune-configurator
   (ppx_expect :with-test)
   (ocaml
