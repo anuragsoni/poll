@@ -6,10 +6,10 @@ let () =
         C.C_define.import
           conf
           ~includes:[]
-          [ "linux", C.C_define.Type.Switch; "_WIN32", C.C_define.Type.Switch ]
+          [ "__linux__", C.C_define.Type.Switch; "_WIN32", C.C_define.Type.Switch ]
       in
       let vars =
-        [ "POLL_CONF_LINUX", List.assoc "linux" platform
+        [ "POLL_CONF_LINUX", List.assoc "__linux__" platform
         ; "POLL_CONF_WIN32", List.assoc "_WIN32" platform
         ]
       in
