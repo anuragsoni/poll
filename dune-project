@@ -23,6 +23,7 @@
  (tags
   (epoll kqueue wepoll))
  (depends
+  base-unix
   ppx_optcomp
   (kqueue
    (>= 0.2.0))

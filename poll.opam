@@ -13,6 +13,7 @@ doc: "https://anuragsoni.github.io/poll"
 bug-reports: "https://github.com/anuragsoni/poll/issues"
 depends: [
   "dune" {>= "2.9"}
+  "base-unix"
   "ppx_optcomp"
   "kqueue" {>= "0.2.0"}
   "dune-configurator"
