@@ -40,10 +40,12 @@ let set t fd event =
   let changelist = Kqueue.Event_list.create 2 in
   let ident = Kqueue.Util.file_descr_to_int fd in
   let read_flags =
-    if event.Event.readable then Kqueue.Flag.(add + receipt) else Kqueue.Flag.delete
+    if event.Event.readable
+    then Kqueue.Flag.(add + oneshot + receipt)
+    else Kqueue.Flag.delete
   in
   let write_flags =
-    if event.writable then Kqueue.Flag.(add + receipt) else Kqueue.Flag.delete
+    if event.writable then Kqueue.Flag.(add + oneshot + receipt) else Kqueue.Flag.delete
   in
   let idx = ref 0 in
   fill_event ident (Kqueue.Event_list.get changelist !idx) read_flags Kqueue.Filter.read;

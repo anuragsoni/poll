@@ -61,8 +61,12 @@ let%expect_test "Can poll for events" =
       assert (not event.writable);
       assert (Unix.read r buf 0 6 = 6));
   Poll.clear poll;
-  (* We only consumed part of the content available to read. Since poll events are level
-     triggered, querying the poller again should still show pending events. *)
+  (* We only consumed part of the content available to read. But poll events are oneshot ,
+     querying the poller again will result in a timeout as we didn't register interest in
+     the fd again. *)
+  check_readiness poll Poll.Timeout.immediate;
+  [%expect {| Timeout |}];
+  Poll.set poll r Poll.Event.read;
   check_readiness poll Poll.Timeout.immediate;
   [%expect {| Event available |}];
   Poll.iter_ready poll ~f:(fun fd event ->
