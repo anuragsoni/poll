@@ -11,6 +11,7 @@ module Ffi = struct
   external epoll_err : unit -> int = "poll_stub_epollerr"
   external epoll_pri : unit -> int = "poll_stub_epollpri"
   external epoll_out : unit -> int = "poll_stub_epollout"
+  external epoll_oneshot : unit -> int = "poll_stub_epolloneshot"
   external epoll_event_sizeof : unit -> int = "poll_stub_epoll_event_sizeout"
 
   external epoll_ctl_add
@@ -54,8 +55,13 @@ module Ffi = struct
   let epoll_err = epoll_err ()
   let epoll_pri = epoll_pri ()
   let epoll_out = epoll_out ()
-  let flag_read = epoll_in lor epoll_rdhup lor epoll_hup lor epoll_err lor epoll_pri
-  let flag_write = epoll_out lor epoll_hup lor epoll_err
+  let epoll_oneshot = epoll_oneshot ()
+
+  let flag_read =
+    epoll_oneshot lor epoll_in lor epoll_rdhup lor epoll_hup lor epoll_err lor epoll_pri
+  ;;
+
+  let flag_write = epoll_oneshot lor epoll_out lor epoll_hup lor epoll_err
 end
 
 type t =
