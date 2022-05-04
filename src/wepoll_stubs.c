@@ -23,6 +23,7 @@
   Epoll_constant(poll_stub_epollerr, EPOLLERR)
   Epoll_constant(poll_stub_epollpri, EPOLLPRI)
   Epoll_constant(poll_stub_epollout, EPOLLOUT)
+  Epoll_constant(poll_stub_epolloneshot, EPOLLONESHOT)
 
 
 CAMLprim value poll_stub_wepoll_create1(value unit) {
