@@ -37,7 +37,7 @@ let pair () =
   if Sys.os_type = "Win32"
   then pair_win32 ()
   else (
-    let a, b = Unix.pipe () in
+    let a, b = Unix.socketpair Unix.PF_UNIX Unix.SOCK_STREAM 0 in
     Unix.set_nonblock a;
     Unix.set_nonblock b;
     a, b)
