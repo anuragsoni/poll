@@ -8,12 +8,15 @@ let create_sock port =
 ;;
 
 let accept poll sock =
-  try
-    let client_fd, _ = Unix.accept sock in
-    Unix.set_nonblock client_fd;
-    Poll.set poll client_fd Poll.Event.read
-  with
-  | Unix.Unix_error (Unix.(EWOULDBLOCK | EAGAIN), _, _) -> ()
+  let () =
+    try
+      let client_fd, _ = Unix.accept sock in
+      Unix.set_nonblock client_fd;
+      Poll.set poll client_fd Poll.Event.read
+    with
+    | Unix.Unix_error (Unix.(EWOULDBLOCK | EAGAIN), _, _) -> ()
+  in
+  Poll.set poll sock Poll.Event.read
 ;;
 
 let read fd buf ~pos ~len =
@@ -26,11 +29,12 @@ let read fd buf ~pos ~len =
       `Read_some)
   with
   | Unix.Unix_error (Unix.(EWOULDBLOCK | EAGAIN), _, _) -> `Poll_again
+  | Unix.Unix_error (Unix.(ECONNRESET), _, _) -> `Eof
 ;;
 
 let () =
   Printexc.record_backtrace true;
-  let sock = create_sock 12345 in
+  let sock = create_sock (int_of_string Sys.argv.(1)) in
   let poll = Poll.create () in
   let buf = Bytes.create 1024 in
   Poll.set poll sock Poll.Event.read;
@@ -44,8 +48,8 @@ let () =
           then accept poll sock
           else (
             match read fd buf ~pos:0 ~len:1024 with
-            | `Poll_again -> ()
-            | `Read_some -> ()
+            | `Poll_again -> Poll.set poll fd Poll.Event.read
+            | `Read_some -> Poll.set poll fd Poll.Event.read
             | `Eof ->
               Poll.set poll fd Poll.Event.none;
               Unix.close fd));

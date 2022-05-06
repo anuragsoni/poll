@@ -11,6 +11,7 @@ module Ffi = struct
   external epoll_err : unit -> int = "poll_stub_epollerr"
   external epoll_pri : unit -> int = "poll_stub_epollpri"
   external epoll_out : unit -> int = "poll_stub_epollout"
+  external epoll_oneshot : unit -> int = "poll_stub_epolloneshot"
   external epoll_event_sizeof : unit -> int = "poll_stub_epoll_event_sizeout"
 
   external epoll_ctl_add
@@ -54,6 +55,7 @@ module Ffi = struct
   let epoll_err = epoll_err ()
   let epoll_pri = epoll_pri ()
   let epoll_out = epoll_out ()
+  let epoll_oneshot = epoll_oneshot ()
   let flag_read = epoll_in lor epoll_rdhup lor epoll_hup lor epoll_err lor epoll_pri
   let flag_write = epoll_out lor epoll_hup lor epoll_err
 end
@@ -96,9 +98,9 @@ let set t fd event =
   let new_flags =
     match event.Event.readable, event.Event.writable with
     | false, false -> None
-    | true, false -> Some Ffi.flag_read
-    | false, true -> Some Ffi.flag_write
-    | true, true -> Some Ffi.(flag_read lor flag_write)
+    | true, false -> Some (Ffi.epoll_oneshot lor Ffi.flag_read)
+    | false, true -> Some (Ffi.epoll_oneshot lor Ffi.flag_write)
+    | true, true -> Some Ffi.(epoll_oneshot lor flag_read lor flag_write)
   in
   match current_flags, new_flags with
   | None, None -> ()
@@ -108,11 +110,9 @@ let set t fd event =
   | Some _, None ->
     Ffi.epoll_ctl_del t.epoll_fd fd;
     Hashtbl.remove t.flags fd
-  | Some a, Some b ->
-    if a <> b
-    then (
-      Ffi.epoll_ctl_mod t.epoll_fd fd b;
-      Hashtbl.replace t.flags fd b)
+  | Some _, Some b ->
+    Ffi.epoll_ctl_mod t.epoll_fd fd b;
+    Hashtbl.replace t.flags fd b
 ;;
 
 let wait t timeout =

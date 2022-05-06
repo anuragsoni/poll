@@ -1,3 +1,8 @@
+# next
+
+* Use oneshot mode for events
+  - Oneshot mode causes the event to return only the first time.
+
 # 0.1.0
 
 * Initial release
