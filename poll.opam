@@ -42,3 +42,4 @@ dev-repo: "git+https://github.com/anuragsoni/poll.git"
 conflicts: [
   "ppxlib" {< "0.14.0"}
 ]
+available: [ arch != "s390x" ]
