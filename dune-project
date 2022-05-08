@@ -29,5 +29,6 @@
    (>= 0.2.0))
   dune-configurator
   (ppx_expect :with-test)
+  (ppx_optcomp :with-test)
   (ocaml
-   (>= 4.12))))
+   (>= 4.13))))

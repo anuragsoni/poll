@@ -10,13 +10,11 @@ jobs:
       matrix:
         ocaml-version:
           - 4.14.x
+          - 4.13.x
         os:
           - macos-latest
           - ubuntu-latest
           - windows-latest
-        include:
-          - os: ubuntu-latest
-            ocaml-version: 4.12.x
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
