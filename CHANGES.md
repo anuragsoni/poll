@@ -1,4 +1,4 @@
-# next
+# 0.2.0
 
 * Use oneshot mode for events
   - Oneshot mode causes the event to return only the first time.
