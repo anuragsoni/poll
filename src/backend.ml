@@ -1,2 +1,2 @@
 type t = ..
-type t += Kqueue | Epoll | Wepoll
+type t += Kqueue | Epoll

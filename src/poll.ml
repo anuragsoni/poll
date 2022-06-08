@@ -6,7 +6,6 @@ module Poll_intf = Poll_intf
 let backends =
   [ (module Kqueue_poll : Poll_intf.S), Kqueue.available
   ; (module Epoll_poll : Poll_intf.S), Epoll_poll.available
-  ; (module Wepoll_poll : Poll_intf.S), Wepoll_poll.available
   ; (module Empty_poll : Poll_intf.S), true
   ]
 ;;
