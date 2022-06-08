@@ -8,4 +8,3 @@ This library currently supports the following platforms:
 
 * macOS via [kqueue](https://en.wikipedia.org/wiki/Kqueue)
 * Linux via [epoll](https://en.wikipedia.org/wiki/Epoll)
-* Windows via [wepoll](https://github.com/piscisaureus/wepoll)
