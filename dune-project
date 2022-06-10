@@ -17,11 +17,11 @@
 
 (package
  (name poll)
- (synopsis "Portable OCaml interface to macOS/Linux native IO event notification mechanisms")
+ (synopsis "Portable OCaml interface to macOS/Linux/Windows native IO event notification mechanisms")
  (description
-  "poll provides a portable OCaml interface to IO event notification mechanisms on macOS and Linux. It uses kqueue on macOS and epoll on Linux.")
+  "poll provides a portable OCaml interface to IO event notification mechanisms on macOS, Linux and Windows. It uses kqueue on macOS, epoll on Linux, and uses a vendored copy of wepoll on Windows.")
  (tags
-  (epoll kqueue))
+  (epoll kqueue wepoll))
  (depends
   base-unix
   ppx_optcomp
