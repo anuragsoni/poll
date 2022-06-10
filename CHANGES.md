@@ -1,5 +1,6 @@
 # 0.3.0
 
+* Make the poller's eventlist length configurable
 * Breaking
   - Remove windows support via wepoll
 

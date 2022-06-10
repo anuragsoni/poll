@@ -8,8 +8,9 @@ type t =
 
 let backend = Backend.Kqueue
 
-let create () =
-  let eventlist = Kqueue.Event_list.create 256 in
+let create ?(num_events = 256) () =
+  if num_events < 1 then invalid_arg "Number of events cannot be less than 1";
+  let eventlist = Kqueue.Event_list.create num_events in
   { kqueue = Kqueue.create (); eventlist; ready_events = 0 }
 ;;
 

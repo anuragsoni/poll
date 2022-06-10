@@ -3,8 +3,10 @@ module type S = sig
 
   val backend : Backend.t
 
-  (** [create] creates a new instance of a poller. *)
-  val create : unit -> t
+  (** [create ?num_events ()] creates a new instance of a poller. num_events is an
+      optional input that can be used to specify how many events to look for when a poller
+      waits for new events. *)
+  val create : ?num_events:int -> unit -> t
 
   (** [set t fd event] updates the state of the set of file descriptors monitored by the
       poller. [Event.none] can be used to delete a fd from the set of descriptors that are

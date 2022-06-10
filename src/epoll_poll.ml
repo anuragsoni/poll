@@ -69,10 +69,11 @@ type t =
 let ensure_open t = if t.closed then failwith "Attempting to use a closed epoll fd"
 let backend = Backend.Epoll
 
-let create () =
+let create ?(num_events = 256) () =
+  if num_events < 1 then invalid_arg "Number of events cannot be less than 1";
   { epoll_fd = Ffi.epoll_create1 ()
   ; ready_events = 0
-  ; events = Bigstring.create (256 * Ffi.epoll_event_sizeof)
+  ; events = Bigstring.create (num_events * Ffi.epoll_event_sizeof)
   ; closed = false
   ; flags = Hashtbl.create 65536
   }

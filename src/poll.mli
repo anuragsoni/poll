@@ -6,7 +6,7 @@ include Poll_intf.S
 
 (** [create'] accepts a user-supplied polling implementation and uses it to create a new
     poller instance. *)
-val create' : (module Poll_intf.S) -> t
+val create' : ?num_events:int -> (module Poll_intf.S) -> t
 
 (** [backend] returns the io event notification backend (ex: kqueue, epoll, etc) used by
     the poller instance. *)

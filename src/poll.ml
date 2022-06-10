@@ -22,17 +22,17 @@ end
 
 type t = Poll.t
 
-let create' backend =
+let create' ?num_events backend =
   let module P = struct
     include (val backend : Poll_intf.S)
 
-    let poll = create ()
+    let poll = create ?num_events ()
   end
   in
   (module P : Poll.S)
 ;;
 
-let create () =
+let create ?num_events () =
   let backend =
     let rec aux = function
       | [] -> failwith "No poll backend found"
@@ -42,7 +42,7 @@ let create () =
     in
     aux backends
   in
-  create' backend
+  create' ?num_events backend
 ;;
 
 let backend t =
