@@ -5,10 +5,12 @@
  (preprocessor_deps config.h)
  (foreign_stubs
   (language c)
-  (names unix_stubs epoll_stubs))
+  (names unix_stubs epoll_stubs wepoll_stubs wepoll))
  (libraries kqueue unix))
 
 (rule
  (targets config.h)
  (action
   (run ./config/config.exe)))
+
+(copy_files# ../vendor/*)
